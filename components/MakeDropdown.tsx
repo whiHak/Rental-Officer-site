@@ -5,7 +5,6 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
-//   import { ICategory } from "@/lib/database/models/category.model";
   import { startTransition, useEffect, useState } from "react";
   import {
     AlertDialog,
@@ -19,33 +18,37 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog";
 import { Input } from "./ui/input";
-//   import { createCategory, getAllCategories } from "@/lib/actions/category.actions";
+import { ICarMaker } from "@/lib/database/models/carmaker.model";
+import { createMaker, getAllMakers } from "@/lib/actions/maker.action";
   
+
   type DropdownProps = {
     value?: string;
     onChangeHandler?: () => void;
   };
+
+
   
   const MakeDropdown = () => {
-    // const [categories, setModels] = useState<ICategory[]>([]);
-    // const [newCategory, setNewCategory] = useState("");
+    const [makers, setMakers] = useState<ICarMaker[]>([]);
+    const [newMaker, setNewMaker] = useState("");
   
-    // const handleAddCategory = () => {
-    //   createModel({
-    //     categoryName: newCategory.trim()
-    //   }).then((model)=>{
-    //     setModels((prevState) => [...prevState, model])
-    //   })
-    // }
+    const handleAddMaker = () => {
+      createMaker({
+        makerName: newMaker.trim()
+      }).then((model)=>{
+        setMakers((prevState) => [...prevState, model])
+      })
+    }
   
-    // useEffect(()=>{
-    //   const getModels = async () => {
-    //     const categoryList = await getAllModels();
+    useEffect(()=>{
+      const getMakers = async () => {
+        const makerList = await getAllMakers();
   
-    //     categoryList && setModels(categoryList as ICategory[]);
-    //   }
-    //     getModels();
-    // },[])
+        makerList && setMakers(makerList as ICarMaker[]);
+      }
+        getMakers();
+    },[])
   
     return (
       <Select >
@@ -53,16 +56,16 @@ import { Input } from "./ui/input";
           <SelectValue placeholder="Maker" />
         </SelectTrigger>
         <SelectContent>
-          {/* {categories.length > 0 &&
-            categories.map((category) => (
+          {makers.length > 0 &&
+            makers.map((maker) => (
               <SelectItem
-                key={category._id}
-                value={category.name}
+                key={maker._id}
+                value={maker.name}
                 className="select-item p-regular-14"
               >
-                {category.name}
+                {maker.name}
               </SelectItem>
-            ))} */}
+            ))}
           <AlertDialog>
             <AlertDialogTrigger className="p-medium-14 flex w-full rounded-sm py-3 pl-8 text-primary-500 hover:bg-primary-50 focus:text-primary-500">
               Add Maker
@@ -71,17 +74,17 @@ import { Input } from "./ui/input";
               <AlertDialogHeader>
                 <AlertDialogTitle>New Maker</AlertDialogTitle>
                 <AlertDialogDescription>
-                  {/* <Input
+                  <Input
                     type="text"
-                    placeholder="Category name"
+                    placeholder="Maker name"
                     className="input-field mt-3"
-                    onChange={(e) => setNewCategory(e.target.value)}
-                  /> */}
+                    onChange={(e) => setNewMaker(e.target.value)}
+                  />
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                {/* <AlertDialogAction onClick={()=> startTransition(handleAddCategory)}>Add</AlertDialogAction> */}
+                <AlertDialogAction onClick={()=> startTransition(handleAddMaker)}>Add</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

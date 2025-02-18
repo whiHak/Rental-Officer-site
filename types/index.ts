@@ -70,3 +70,10 @@ export interface ShowMoreProps{
   isNext: boolean
 }
 
+export type CreateMakerParams = {
+  makerName: string
+}
+export type CreateModelParams = {
+  modelName: string
+}
+

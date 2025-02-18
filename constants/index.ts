@@ -118,3 +118,18 @@ export const manufacturers = [
       ],
     },
   ];
+
+  export const carDefaultValues = {
+    make: "",
+    model: "",
+    drive: "",
+    fuel: "",
+    plate: "",
+    price: "",
+    cylinder: "" ,
+    year: "",
+    imageUrl1: "",
+    imageUrl2: "",
+    imageUrl3: "",
+    imageUrl4: ""
+  };

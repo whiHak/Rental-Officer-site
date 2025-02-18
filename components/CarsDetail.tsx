@@ -2,13 +2,13 @@ import React from "react";
 import Search from "./Search";
 import CarCard from "./CarCard";
 
-const UpdateCarsDetail = () => {
+const CarsDetail = () => {
   return (
     <section className=" flex flex-col gap-4">
       <Search placeholder="Search cars..." />
-      <CarCard/>
+      <CarCard />
     </section>
   );
 };
 
-export default UpdateCarsDetail;
+export default CarsDetail;

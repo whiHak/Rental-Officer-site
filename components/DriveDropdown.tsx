@@ -5,9 +5,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-//   import { ICategory } from "@/lib/database/models/category.model";
-import { startTransition, useEffect, useState } from "react";
-//   import { createCategory, getAllCategories } from "@/lib/actions/category.actions";
 
 type DropdownProps = {
   value?: string;
@@ -22,13 +19,16 @@ const DriveDropdown = () => {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="fwd" className="select-item p-regular-14">
-          fwd
+          FWD
         </SelectItem>
         <SelectItem value="bwd" className="select-item p-regular-14">
-          bwd
+          BWD
         </SelectItem>
         <SelectItem value="awd" className="select-item p-regular-14">
-          awd
+          AWD
+        </SelectItem>
+        <SelectItem value="4wd" className="select-item p-regular-14">
+          4WD
         </SelectItem>
       </SelectContent>
     </Select>
