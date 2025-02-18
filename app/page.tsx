@@ -4,11 +4,20 @@ import Confiramtion from "@/components/Confiramtion";
 import HomeE from "@/components/HomeE";
 import Navbar from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import UpdateCarsDetail from "@/components/UpdateCarsDetail";
+import UpdateCarsDetail from "@/components/CarsDetail";
+import { getServerSession } from "next-auth";
 import Image from "next/image";
 import { useState } from "react";
+import { options } from "./api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
 
 const Home = async () => {
+  const session = await getServerSession(options);
+
+  if (!session) {
+    redirect("/api/auth/signin?callbackUrl=/");
+  }
+
   return (
     <main>
       <Navbar />
@@ -61,7 +70,7 @@ const Home = async () => {
               <HomeE />
             </TabsContent>
             <TabsContent value="carForm">
-              <CarForm />
+              <CarForm type="Create" />
             </TabsContent>
             <TabsContent value="updateCars">
               <UpdateCarsDetail />

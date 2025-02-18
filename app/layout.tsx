@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AuthProvider from "@/context/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Car Rent Showcase",
@@ -12,8 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="en">
+    <html lang="en">
+      <AuthProvider>
         <body className={`relative`}>{children}</body>
-      </html>
+      </AuthProvider>
+    </html>
   );
 }
