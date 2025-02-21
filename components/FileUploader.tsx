@@ -10,17 +10,24 @@ type FileUploaderProps = {
   onFieldChange: (url: string) => void
   imageUrl: string
   setFiles: Dispatch<SetStateAction<File[]>>
+  index: number
 }
 
-export function FileUploader({ imageUrl, onFieldChange, setFiles }: FileUploaderProps) {
+export function FileUploader({ imageUrl, onFieldChange, setFiles, index }: FileUploaderProps) {
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(acceptedFiles)
+    setFiles(prevFiles => {
+      const newFiles = [...prevFiles];
+      newFiles[index] = acceptedFiles[0];
+      return newFiles;
+    });
+    
     onFieldChange(convertFileToUrl(acceptedFiles[0]))
-  }, [])
+  }, [index, setFiles, onFieldChange])
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: 'image/*' ? generateClientDropzoneAccept(['image/*']) : undefined,
+    multiple: false,
   })
 
   return (

@@ -16,7 +16,7 @@ export interface SearchManufacturerProps {
 }
 
 export interface CarCardProps {
-  id:string;
+  id: string;
   city_mpg: number;
   class: string;
   combination_mpg: number;
@@ -49,7 +49,7 @@ export interface FilterProps {
 
 export interface FetchProps {
   manufacturer: string;
-  model: string; 
+  model: string;
   year: number;
   fuel: string;
   limit: number;
@@ -65,15 +65,36 @@ export interface CustomFilterProps {
   options: OptionsProps[];
 }
 
-export interface ShowMoreProps{
+export interface ShowMoreProps {
   pageNumber: number;
-  isNext: boolean
+  isNext: boolean;
 }
+
+export type DropdownProps = {
+  value?: string;
+  onChangeHandler?: () => void;
+};
 
 export type CreateMakerParams = {
-  makerName: string
-}
+  makerName: string;
+};
 export type CreateModelParams = {
-  modelName: string
-}
+  modelName: string;
+};
 
+export type CreateCarParams = {
+  car: {
+    make: string;
+    model: string;
+    drive: string;
+    fuel: string;
+    plate: string;
+    price: string;
+    cylinder: string;
+    year: string;
+    imageUrl1: string;
+    imageUrl2?: string;
+    imageUrl3?: string;
+    imageUrl4?: string;
+  };
+};

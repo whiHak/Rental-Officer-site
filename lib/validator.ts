@@ -1,15 +1,14 @@
 import { z } from "zod";
 
 export const driverFormSchema = z.object({
-  model: z.string().min(1, "Model is required"),
-  make: z.string().min(1, "Make is required"),
-  drive: z.string().min(1, "Drive type is required"),
-  fuel: z.string().min(1, "Fuel type is required"),
+  model: z.string().min(1, "Please select a model"),
+  make: z.string().min(1, "Please select a make"),
+  drive: z.string().min(1, "Please select a drive type"),
+  fuel: z.string().min(1, "Please select a fuel type"),
   plate: z.string()
-    .min(1, "Plate number is required")
-    .regex(/^[0-9A-Z\s-]+$/i, "Invalid plate number format")
     .min(2, "Plate number must be at least 2 characters")
-    .max(10, "Plate number cannot exceed 10 characters"),
+    .max(10, "Plate number cannot exceed 10 characters")
+    .regex(/^[0-9A-Z\s-]+$/i, "Invalid plate number format"),
   price: z.string()
     .trim()
     .min(1, "Price is required")
@@ -22,7 +21,8 @@ export const driverFormSchema = z.object({
     .regex(/^[0-9]+$/, "Cylinder must be a number")
     .refine((val) => Number(val) >= 2 && Number(val) <= 16, "Cylinder count must be between 2 and 16"),
   year: z.string()
-    .min(1, "Year is required")
+    .min(4, "Year must be a 4-digit number")
+    .max(4, "Year must be a 4-digit number")
     .regex(/^[0-9]{4}$/, "Year must be a 4-digit number")
     .refine(
       (val) => {
@@ -33,7 +33,7 @@ export const driverFormSchema = z.object({
       `Year must be between 1900 and ${new Date().getFullYear()}`
     ),
   imageUrl1: z.string().min(1, "Primary image is required"),
-  imageUrl2: z.string(),
-  imageUrl3: z.string(),
-  imageUrl4: z.string()
+  imageUrl2: z.string().optional(),
+  imageUrl3: z.string().optional(),
+  imageUrl4: z.string().optional(),
 });

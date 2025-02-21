@@ -5,15 +5,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DropdownProps } from "@/types";
 
-type DropdownProps = {
-  value?: string;
-  onChangeHandler?: () => void;
-};
-
-const DriveDropdown = () => {
+const DriveDropdown = ({onChangeHandler, value}: DropdownProps) => {
   return (
-    <Select>
+    <Select onValueChange={onChangeHandler} defaultValue={value}>
       <SelectTrigger className="select-field ">
         <SelectValue placeholder="Drive" />
       </SelectTrigger>

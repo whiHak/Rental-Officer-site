@@ -20,16 +20,11 @@ import {
 import { Input } from "./ui/input";
 import { ICarMaker } from "@/lib/database/models/carmaker.model";
 import { createMaker, getAllMakers } from "@/lib/actions/maker.action";
-  
-
-  type DropdownProps = {
-    value?: string;
-    onChangeHandler?: () => void;
-  };
+import { DropdownProps } from "@/types";
 
 
   
-  const MakeDropdown = () => {
+  const MakeDropdown = ({onChangeHandler, value}: DropdownProps) => {
     const [makers, setMakers] = useState<ICarMaker[]>([]);
     const [newMaker, setNewMaker] = useState("");
   
@@ -51,7 +46,7 @@ import { createMaker, getAllMakers } from "@/lib/actions/maker.action";
     },[])
   
     return (
-      <Select >
+      <Select onValueChange={onChangeHandler} defaultValue={value} >
         <SelectTrigger className="select-field ">
           <SelectValue placeholder="Maker" />
         </SelectTrigger>

@@ -3,7 +3,6 @@ import { driverFormSchema } from "@/lib/validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 import { useState } from "react";
 import CustomButton from "./CustomButton";
 import ModelDropdown from "./ModelDropdown";
@@ -22,20 +20,127 @@ import MakeDropdown from "./MakeDropdown";
 import DriveDropdown from "./DriveDropdown";
 import FuelDropdown from "./FuelDropdown";
 import { FileUploader } from "./FileUploader";
+import { ICar } from "@/lib/database/models/car.model";
+import { carDefaultValues } from "@/constants";
+import { useRouter } from "next/navigation";
+import { useUploadThing } from "@/lib/uploadthing";
+import { createCar } from "@/lib/actions/car.action";
+import { revalidatePath } from "next/cache";
+import { ToastContainer, toast } from 'react-toastify';
 
-const CarForm = () => {
+
+type CarFormProps = {
+  type: "Create" | "Update";
+  car?: ICar;
+  carId?: string;
+};
+
+const CarForm = ({ type, car, carId }: CarFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
 
+  const initialValues =
+    car && type === "Update"
+      ? {
+          ...car,
+          price: car.price?.toString(),
+          cylinder: car.cylinder?.toString(),
+          year: car.year?.toString(),
+        }
+      : carDefaultValues;
+
+  const router = useRouter();
+  const { startUpload } = useUploadThing("imageUploader", {
+    onClientUploadComplete: (res) => {
+      console.log('Upload Completed:', res);
+    },
+    onUploadError: (error: Error) => {
+      console.error('Upload Error:', error);
+    },
+  });
 
   const form = useForm<z.infer<typeof driverFormSchema>>({
     resolver: zodResolver(driverFormSchema),
-    defaultValues: {},
+    defaultValues: initialValues,
   });
 
   async function onSubmit(values: z.infer<typeof driverFormSchema>) {
-    // Do something with the form values.
-    console.log(values);
-    // If form is valid, navigate to payment tab
+    const carData = values;
+    let uploadedImageUrls = {
+      imageUrl1: '',
+      imageUrl2: '',
+      imageUrl3: '',
+      imageUrl4: ''
+    };
+
+    try {
+      if (files.length === 0) {
+        toast.error("Please upload at least one image");
+        return;
+      }
+
+      // Log files before upload for debugging
+      console.log('Files to upload:', files);
+
+      const uploadedImages = await startUpload(files);
+      
+      if (!uploadedImages) {
+        toast.error("Error Uploading Images");
+        return;
+      }
+
+      // Log uploaded images response
+      console.log('Uploaded images:', uploadedImages);
+
+      // Create an array to store all uploaded URLs
+      const allUploadedUrls = uploadedImages.map(image => image?.url || '');
+
+      // Assign URLs to their respective keys
+      for (let i = 0; i < allUploadedUrls.length && i < 4; i++) {
+        const imageKey = `imageUrl${i + 1}` as keyof typeof uploadedImageUrls;
+        if (allUploadedUrls[i]) {
+          uploadedImageUrls[imageKey] = allUploadedUrls[i];
+        }
+      }
+
+      // Log final image URLs object
+      console.log('Final image URLs:', uploadedImageUrls);
+
+      if (type === "Create") {
+        try {
+          const res = await fetch("/api/cars", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              car: {
+                ...carData,
+                ...uploadedImageUrls
+              },
+            }),
+          });
+
+          const result = await res.json();
+          if (result.success) {
+            toast.success("Car Created Successfully");
+            // form.reset();
+            // setFiles([]); // Reset files state
+          } else {
+            toast.error(result.message || "Error Creating Car");
+          }
+        } catch (error) {
+          console.error("Error creating car:", error);
+          toast.error("Error Creating Car");
+        }
+      }
+    } catch (error) {
+      console.error("Error during upload:", error);
+      toast.error("Error uploading images");
+    }
+
+    if (type === "Update") {
+      // Update logic here
+    }
   }
 
   return (
@@ -55,7 +160,10 @@ const CarForm = () => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <MakeDropdown />
+                    <MakeDropdown
+                    onChangeHandler={field.onChange}
+                    value={field.value}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -68,7 +176,10 @@ const CarForm = () => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <ModelDropdown />
+                    <ModelDropdown
+                    onChangeHandler={field.onChange}
+                    value={field.value}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -83,7 +194,10 @@ const CarForm = () => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <DriveDropdown />
+                    <DriveDropdown 
+                    onChangeHandler={field.onChange}
+                    value={field.value}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -96,7 +210,10 @@ const CarForm = () => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <FuelDropdown />
+                    <FuelDropdown 
+                    onChangeHandler={field.onChange}
+                    value={field.value}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -145,40 +262,40 @@ const CarForm = () => {
             />
           </div>
           <div className="flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="cylinder"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="Cylinder"
-                    {...field}
-                    className="input-field"
-                  />
-                </FormControl>
+            <FormField
+              control={form.control}
+              name="cylinder"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input
+                      placeholder="Cylinder"
+                      {...field}
+                      className="input-field"
+                    />
+                  </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="year"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="Year"
-                    {...field}
-                    className="input-field"
-                  />
-                </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="year"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input
+                      placeholder="Year"
+                      {...field}
+                      className="input-field"
+                    />
+                  </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <div className="flex flex-col gap-5 md:flex-row">
             <FormField
@@ -189,8 +306,9 @@ const CarForm = () => {
                   <FormControl className="h-72">
                     <FileUploader
                       onFieldChange={field.onChange}
-                      imageUrl={field.value}
+                      imageUrl={field.value || ''}
                       setFiles={setFiles}
+                      index={0}
                     />
                   </FormControl>
                   <FormMessage />
@@ -205,8 +323,9 @@ const CarForm = () => {
                   <FormControl className="h-72">
                     <FileUploader
                       onFieldChange={field.onChange}
-                      imageUrl={field.value}
+                      imageUrl={field.value || ''}
                       setFiles={setFiles}
+                      index={1}
                     />
                   </FormControl>
                   <FormMessage />
@@ -223,8 +342,9 @@ const CarForm = () => {
                   <FormControl className="h-72">
                     <FileUploader
                       onFieldChange={field.onChange}
-                      imageUrl={field.value}
+                      imageUrl={field.value || ''}
                       setFiles={setFiles}
+                      index={2}
                     />
                   </FormControl>
                   <FormMessage />
@@ -239,8 +359,9 @@ const CarForm = () => {
                   <FormControl className="h-72">
                     <FileUploader
                       onFieldChange={field.onChange}
-                      imageUrl={field.value}
+                      imageUrl={field.value || ''}
                       setFiles={setFiles}
+                      index={3}
                     />
                   </FormControl>
                   <FormMessage />
@@ -250,7 +371,7 @@ const CarForm = () => {
           </div>
         </div>
         <CustomButton
-          title={form.formState.isSubmitting ? "Submitting..." : "Register Car"}
+          title={form.formState.isSubmitting ? "Submitting..." : `${type} Car`}
           btnType="submit"
           disabled={form.formState.isSubmitting}
           btnStyles="w-full  gap-4 py-[16px] rounded-full bg-primary-blue"
@@ -258,6 +379,7 @@ const CarForm = () => {
           rightIcon="/right-arrow.svg"
         />
       </form>
+      <ToastContainer />
     </Form>
   );
 };

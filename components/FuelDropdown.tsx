@@ -5,18 +5,15 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
+import { DropdownProps } from "@/types";
   //   import { ICategory } from "@/lib/database/models/category.model";
   import { startTransition, useEffect, useState } from "react";
   //   import { createCategory, getAllCategories } from "@/lib/actions/category.actions";
+
   
-  type DropdownProps = {
-    value?: string;
-    onChangeHandler?: () => void;
-  };
-  
-  const FuelDropdown = () => {
+  const FuelDropdown = ({onChangeHandler, value}: DropdownProps) => {
     return (
-      <Select>
+      <Select onValueChange={onChangeHandler} defaultValue={value}>
         <SelectTrigger className="select-field ">
           <SelectValue placeholder="Fuel Type" />
         </SelectTrigger>

@@ -20,16 +20,9 @@ import {
 import { Input } from "./ui/input";
 import { ICarModel } from "@/lib/database/models/carmodel.model";
 import { createModel, getAllModels } from "@/lib/actions/model.action";
+import { DropdownProps } from "@/types";
 
-
-type DropdownProps = {
-  value?: string;
-  onChangeHandler?: () => void;
-};
-
-
-
-const ModelDropdown = () => {
+const ModelDropdown = ({onChangeHandler, value}: DropdownProps) => {
   const [models, setModels] = useState<ICarModel[]>([]);
   const [newModel, setNewModel] = useState("");
 
@@ -51,7 +44,7 @@ const ModelDropdown = () => {
   },[])
 
   return (
-    <Select >
+    <Select onValueChange={onChangeHandler} defaultValue={value} >
       <SelectTrigger className="select-field ">
         <SelectValue placeholder="Models" />
       </SelectTrigger>
