@@ -24,8 +24,6 @@ import { ICar } from "@/lib/database/models/car.model";
 import { carDefaultValues } from "@/constants";
 import { useRouter } from "next/navigation";
 import { useUploadThing } from "@/lib/uploadthing";
-import { createCar } from "@/lib/actions/car.action";
-import { revalidatePath } from "next/cache";
 import { ToastContainer, toast } from 'react-toastify';
 
 
