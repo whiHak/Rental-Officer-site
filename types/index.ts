@@ -1,3 +1,4 @@
+import { ICar } from "@/lib/database/models/car.model";
 import { MouseEventHandler } from "react";
 
 export interface CustomButtonProps {
@@ -98,3 +99,8 @@ export type CreateCarParams = {
     imageUrl4?: string;
   };
 };
+
+export type UpdateCarparams = {
+  id: string;
+  car:ICar;
+}

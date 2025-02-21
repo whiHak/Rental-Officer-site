@@ -24,8 +24,8 @@ import { ICar } from "@/lib/database/models/car.model";
 import { carDefaultValues } from "@/constants";
 import { useRouter } from "next/navigation";
 import { useUploadThing } from "@/lib/uploadthing";
-import { ToastContainer, toast } from 'react-toastify';
-
+import { ToastContainer, toast } from "react-toastify";
+import { updateCar } from "@/lib/actions/car.action";
 
 type CarFormProps = {
   type: "Create" | "Update";
@@ -49,10 +49,10 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
   const router = useRouter();
   const { startUpload } = useUploadThing("imageUploader", {
     onClientUploadComplete: (res) => {
-      console.log('Upload Completed:', res);
+      console.log("Upload Completed:", res);
     },
     onUploadError: (error: Error) => {
-      console.error('Upload Error:', error);
+      console.error("Upload Error:", error);
     },
   });
 
@@ -64,10 +64,10 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
   async function onSubmit(values: z.infer<typeof driverFormSchema>) {
     const carData = values;
     let uploadedImageUrls = {
-      imageUrl1: '',
-      imageUrl2: '',
-      imageUrl3: '',
-      imageUrl4: ''
+      imageUrl1: "",
+      imageUrl2: "",
+      imageUrl3: "",
+      imageUrl4: "",
     };
 
     try {
@@ -77,20 +77,20 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
       }
 
       // Log files before upload for debugging
-      console.log('Files to upload:', files);
+      console.log("Files to upload:", files);
 
       const uploadedImages = await startUpload(files);
-      
+
       if (!uploadedImages) {
         toast.error("Error Uploading Images");
         return;
       }
 
       // Log uploaded images response
-      console.log('Uploaded images:', uploadedImages);
+      console.log("Uploaded images:", uploadedImages);
 
       // Create an array to store all uploaded URLs
-      const allUploadedUrls = uploadedImages.map(image => image?.url || '');
+      const allUploadedUrls = uploadedImages.map((image) => image?.url || "");
 
       // Assign URLs to their respective keys
       for (let i = 0; i < allUploadedUrls.length && i < 4; i++) {
@@ -101,7 +101,7 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
       }
 
       // Log final image URLs object
-      console.log('Final image URLs:', uploadedImageUrls);
+      console.log("Final image URLs:", uploadedImageUrls);
 
       if (type === "Create") {
         try {
@@ -113,7 +113,7 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
             body: JSON.stringify({
               car: {
                 ...carData,
-                ...uploadedImageUrls
+                ...uploadedImageUrls,
               },
             }),
           });
@@ -131,13 +131,42 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
           toast.error("Error Creating Car");
         }
       }
+      if (type === "Update") {
+        if (!carId) {
+          toast.error("Car ID is missing");
+          return;
+        }
+
+        try {
+          const res = await fetch(`/api/cars/${carId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              car: {
+                ...carData,
+                ...uploadedImageUrls,
+              },
+            }),
+          });
+
+          const result = await res.json();
+
+          if (result.success) {
+            toast.success("Car Updated Successfully");
+            router.push("/"); // Redirect to home page
+          } else {
+            toast.error(result.message || "Error Updating Car");
+          }
+        } catch (error) {
+          console.error("Error updating car:", error);
+          toast.error("Error Updating Car");
+        }
+      }
     } catch (error) {
       console.error("Error during upload:", error);
       toast.error("Error uploading images");
-    }
-
-    if (type === "Update") {
-      // Update logic here
     }
   }
 
@@ -159,8 +188,8 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
                 <FormItem className="w-full">
                   <FormControl>
                     <MakeDropdown
-                    onChangeHandler={field.onChange}
-                    value={field.value}
+                      onChangeHandler={field.onChange}
+                      value={field.value}
                     />
                   </FormControl>
 
@@ -175,8 +204,8 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
                 <FormItem className="w-full">
                   <FormControl>
                     <ModelDropdown
-                    onChangeHandler={field.onChange}
-                    value={field.value}
+                      onChangeHandler={field.onChange}
+                      value={field.value}
                     />
                   </FormControl>
 
@@ -192,9 +221,9 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <DriveDropdown 
-                    onChangeHandler={field.onChange}
-                    value={field.value}
+                    <DriveDropdown
+                      onChangeHandler={field.onChange}
+                      value={field.value}
                     />
                   </FormControl>
 
@@ -208,9 +237,9 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <FuelDropdown 
-                    onChangeHandler={field.onChange}
-                    value={field.value}
+                    <FuelDropdown
+                      onChangeHandler={field.onChange}
+                      value={field.value}
                     />
                   </FormControl>
 
@@ -304,7 +333,7 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
                   <FormControl className="h-72">
                     <FileUploader
                       onFieldChange={field.onChange}
-                      imageUrl={field.value || ''}
+                      imageUrl={field.value || ""}
                       setFiles={setFiles}
                       index={0}
                     />
@@ -321,7 +350,7 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
                   <FormControl className="h-72">
                     <FileUploader
                       onFieldChange={field.onChange}
-                      imageUrl={field.value || ''}
+                      imageUrl={field.value || ""}
                       setFiles={setFiles}
                       index={1}
                     />
@@ -340,7 +369,7 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
                   <FormControl className="h-72">
                     <FileUploader
                       onFieldChange={field.onChange}
-                      imageUrl={field.value || ''}
+                      imageUrl={field.value || ""}
                       setFiles={setFiles}
                       index={2}
                     />
@@ -357,7 +386,7 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
                   <FormControl className="h-72">
                     <FileUploader
                       onFieldChange={field.onChange}
-                      imageUrl={field.value || ''}
+                      imageUrl={field.value || ""}
                       setFiles={setFiles}
                       index={3}
                     />
