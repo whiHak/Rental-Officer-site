@@ -76,9 +76,6 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
         return;
       }
 
-      // Log files before upload for debugging
-      console.log("Files to upload:", files);
-
       const uploadedImages = await startUpload(files);
 
       if (!uploadedImages) {
@@ -86,8 +83,6 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
         return;
       }
 
-      // Log uploaded images response
-      console.log("Uploaded images:", uploadedImages);
 
       // Create an array to store all uploaded URLs
       const allUploadedUrls = uploadedImages.map((image) => image?.url || "");
@@ -99,9 +94,6 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
           uploadedImageUrls[imageKey] = allUploadedUrls[i];
         }
       }
-
-      // Log final image URLs object
-      console.log("Final image URLs:", uploadedImageUrls);
 
       if (type === "Create") {
         try {
@@ -121,8 +113,8 @@ const CarForm = ({ type, car, carId }: CarFormProps) => {
           const result = await res.json();
           if (result.success) {
             toast.success("Car Created Successfully");
-            // form.reset();
-            // setFiles([]); // Reset files state
+            form.reset();
+            setFiles([]); // Reset files state
           } else {
             toast.error(result.message || "Error Creating Car");
           }

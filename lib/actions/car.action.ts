@@ -45,3 +45,13 @@ export const updateCar = async ({ id, car }: UpdateCarparams) => {
     return JSON.parse(JSON.stringify(updatedCar));
   } catch (error) {}
 };
+
+export const deleteCar = async (id: string) =>{
+    try {
+        await connectToDatabase();
+        await Car.findByIdAndDelete(id);
+        revalidatePath("/");
+    } catch (error) {
+        console.log(error);
+    }
+}

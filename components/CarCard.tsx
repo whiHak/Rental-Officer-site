@@ -26,7 +26,7 @@ const CarCard = ({id, car }:CarCardProps) => {
             />
           </Link>
           <Link href="">
-            <DeleteConfirmation />
+            <DeleteConfirmation id={id}/>
           </Link>
         </div>
       </div>
