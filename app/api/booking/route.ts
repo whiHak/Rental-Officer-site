@@ -3,21 +3,21 @@ import { getBooks, deleteBooking } from "@/lib/actions/book.action";
 import { getServerSession } from "next-auth/next";
 import { options } from "../auth/[...nextauth]/options";
 import mongoose from 'mongoose';
+import Car from "@/lib/database/models/car.model";
 
 export async function GET() {
   try {
     // Get the session but don't require it
     const session = await getServerSession(options);
     
-    // Ensure mongoose models are registered before any DB operations
-    if (!mongoose.models.Car) {
-      console.error("Car model not registered");
-      return NextResponse.json(
-        { message: "Internal server error - Database model not initialized" },
-        { status: 500 }
-      );
+    // Ensure database connection is established
+    if (mongoose.connection.readyState !== 1) {
+      await mongoose.connect(process.env.MONGODB_URL!);
     }
 
+    // The Car model will be automatically registered when imported
+    // No need to check mongoose.models.Car explicitly
+    
     // Log for debugging
     console.log("Session in booking API:", session);
     console.log("Attempting to fetch bookings...");
