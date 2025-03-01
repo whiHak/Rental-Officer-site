@@ -96,7 +96,7 @@ export const getBooksByUserId = async(userId: string) => {
     throw error;
   }
 }
-
+ 
 export const deleteBooking = async(bookId: string) => {
   try {
     await connectToDatabase();

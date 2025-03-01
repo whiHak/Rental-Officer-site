@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getBooks, deleteBooking } from "@/lib/actions/book.action";
-
+ 
 export async function GET() {
   try {
     const bookings = await getBooks();
