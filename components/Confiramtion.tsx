@@ -1,8 +1,11 @@
 import React from 'react'
+import BookingList from './BookingList'
 
 const Confiramtion = () => {
   return (
-    <div>Confiramtion</div>
+    <div>
+      <BookingList/>
+    </div>
   )
 }
 

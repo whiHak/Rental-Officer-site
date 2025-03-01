@@ -1,8 +1,11 @@
 import React from 'react'
+import BookingList from './BookingList'
 
 const Booked = () => {
   return (
-    <div>Booked</div>
+    <div>
+      <BookingList isBooked={true}/>
+    </div>
   )
 }
 
