@@ -52,11 +52,20 @@ export const createBooking = async (data: CreateBookingParams) => {
 export const getBooks = async () => {
   try {
     await connectToDatabase();
+    
     const books = await Book.find()
       .populate('car', 'make model price imageUrl1')
+      .lean(); // Using lean() for better performance
+      
+    if (!books) {
+      console.error("No books found in database");
+      return null;
+    }
+
     return JSON.parse(JSON.stringify(books));
   } catch (error) {
-    console.log(error)
+    console.error("GetBooks Error:", error);
+    throw error;
   }
 }
 
