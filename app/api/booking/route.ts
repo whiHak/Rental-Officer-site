@@ -2,12 +2,22 @@ import { NextResponse } from "next/server";
 import { getBooks, deleteBooking } from "@/lib/actions/book.action";
 import { getServerSession } from "next-auth/next";
 import { options } from "../auth/[...nextauth]/options";
+import mongoose from 'mongoose';
 
 export async function GET() {
   try {
     // Get the session but don't require it
     const session = await getServerSession(options);
     
+    // Ensure mongoose models are registered before any DB operations
+    if (!mongoose.models.Car) {
+      console.error("Car model not registered");
+      return NextResponse.json(
+        { message: "Internal server error - Database model not initialized" },
+        { status: 500 }
+      );
+    }
+
     // Log for debugging
     console.log("Session in booking API:", session);
     console.log("Attempting to fetch bookings...");
