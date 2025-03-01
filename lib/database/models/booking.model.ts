@@ -1,4 +1,5 @@
 import { model, models, Schema } from "mongoose";
+import "./user.model"; // This ensures the User model is registered first
 
 export interface IBooking extends Document {
   _id: string;
@@ -46,5 +47,5 @@ const BookingSchema = new Schema({
   strict: true
 });
 
-const Books = models.Book || model("Books", BookingSchema);
-export default Books;
+const Book = models.Book || model("Book", BookingSchema);
+export default Book;
