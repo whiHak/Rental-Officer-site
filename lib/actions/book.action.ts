@@ -60,6 +60,7 @@ export const getBooks = async () => {
   }
 }
 
+
 export const updateBooking = async (bookingId: string, updateData: Partial<CreateBookingParams>) => {
   try {
     await connectToDatabase();
