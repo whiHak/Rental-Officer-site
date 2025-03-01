@@ -1,3 +1,4 @@
+"use server"
 import { CreateCarParams } from "@/types";
 import { connectToDatabase } from "../database";
 import Car from "../database/models/car.model";
@@ -20,7 +21,9 @@ export const getAllCars = async () => {
     await connectToDatabase();
     const cars = await Car.find();
     return JSON.parse(JSON.stringify(cars));
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 };
 
 export const getCarById = async (id: string) => {
