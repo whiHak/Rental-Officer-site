@@ -52,23 +52,13 @@ export const createBooking = async (data: CreateBookingParams) => {
 export const getBooks = async () => {
   try {
     await connectToDatabase();
-    
     const books = await Book.find()
       .populate('car', 'make model price imageUrl1')
-      .lean(); // Using lean() for better performance
-      
-    if (!books) {
-      console.error("No books found in database");
-      return null;
-    }
-
     return JSON.parse(JSON.stringify(books));
   } catch (error) {
-    console.error("GetBooks Error:", error);
-    throw error;
+    console.log(error)
   }
 }
-
 
 export const updateBooking = async (bookingId: string, updateData: Partial<CreateBookingParams>) => {
   try {
@@ -105,7 +95,7 @@ export const getBooksByUserId = async(userId: string) => {
     throw error;
   }
 }
- 
+
 export const deleteBooking = async(bookId: string) => {
   try {
     await connectToDatabase();

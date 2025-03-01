@@ -1,5 +1,5 @@
 import { model, models, Schema } from "mongoose";
- 
+
 export interface IBooking extends Document {
   _id: string;
   tx_ref: string;
