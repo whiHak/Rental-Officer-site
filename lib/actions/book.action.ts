@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../database";
 import Book from "../database/models/booking.model";
 import { Types } from 'mongoose';
+import Books from "../database/models/booking.model";
 
 type CreateBookingParams = {
   fullName: string;
@@ -52,7 +53,7 @@ export const createBooking = async (data: CreateBookingParams) => {
 export const getBooks = async () => {
   try {
     await connectToDatabase();
-    const books = await Book.find()
+    const books = await Books.find()
       .populate('car', 'make model price imageUrl1')
     return JSON.parse(JSON.stringify(books));
   } catch (error) {
