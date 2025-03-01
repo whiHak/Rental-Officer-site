@@ -46,5 +46,5 @@ const BookingSchema = new Schema({
   strict: true
 });
 
-const Book = models.Book || model("Book", BookingSchema);
-export default Book;
+const Books = models.Book || model("Books", BookingSchema);
+export default Books;
