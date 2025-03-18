@@ -78,7 +78,7 @@ const filteredBookings = bookings.filter((apt) => {
         (filters.status === "all" || apt.paymentStatus === filters.status)
     )
 })
-console.log(filteredBookings)
+console.log(filteredBookings) 
 
   return (
     <div className="space-y-4">

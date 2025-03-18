@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../database";
 import Book from "../database/models/booking.model";
 import { Types } from 'mongoose';
+import Books from "../database/models/booking.model";
 
 type CreateBookingParams = {
   fullName: string;
@@ -54,9 +55,17 @@ export const getBooks = async () => {
     await connectToDatabase();
     const books = await Book.find()
       .populate('car', 'make model price imageUrl1')
+      .populate('user', 'fullName email')
+      .sort({ createdAt: -1 }); // Optional: sort by newest first
+    
+    if (!books) {
+      throw new Error('Failed to fetch books');
+    }
+
     return JSON.parse(JSON.stringify(books));
   } catch (error) {
-    console.log(error)
+    console.error("Error fetching books:", error);
+    throw error; // Properly throw the error to handle it in the UI
   }
 }
 
