@@ -5,6 +5,7 @@ import HomeE from "@/components/HomeE";
 import Navbar from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UpdateCarsDetail from "@/components/CarsDetail";
+import Feedback from "@/components/Feedback";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import { useState } from "react";
@@ -62,6 +63,12 @@ const Home = async () => {
               >
                 Booked
               </TabsTrigger>
+              <TabsTrigger
+                value="feedback"
+                className="w-full m-3 py-[11px] px-[28px] text-base font-bold rounded-full data-[state=active]:bg-primary-blue data-[state=active]:text-white"
+              >
+                Feedbacks
+              </TabsTrigger>
             </TabsList>
           </div>
           <div className="wrapper justify-between grid-cols-1 md:grid-cols-2 2xl:max-w-7xl ">
@@ -80,6 +87,9 @@ const Home = async () => {
             </TabsContent>
             <TabsContent value="booked">
               <Booked />
+            </TabsContent>
+            <TabsContent value="feedback">
+              <Feedback />
             </TabsContent>
           </div>
         </Tabs>

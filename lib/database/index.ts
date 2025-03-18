@@ -9,13 +9,21 @@ export const connectToDatabase = async () => {
     return cached.conn;
   }
 
-  if(!MONGODB_URI) throw new Error("MONGODB_URI is missing")
+  if(!MONGODB_URI) throw new Error("MONGODB_URI is missing");
 
-    cached.promise = cached.promise || mongoose.connect(MONGODB_URI , {
-        dbName: "CarHub",
-        bufferCommands: false,
-    })
+  cached.promise = mongoose.connect(MONGODB_URI, {
+    dbName: "CarHub",
+    bufferCommands: false,
+    // serverSelectionTimeoutMS: 5000, // 5 seconds timeout
+    // connectTimeoutMS: 10000, // 10 seconds timeout
+  });
 
+  try {
     cached.conn = await cached.promise;
-    return cached.conn;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
+
+  return cached.conn;
 };

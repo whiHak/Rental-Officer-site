@@ -10,7 +10,7 @@ const CarsDetail = async() => {
       <Search placeholder="Search cars..." />
 
       <div className="flex flex-wrap gap-4">
-        {cars.map((car:any) => (
+        {cars?.map((car:any) => (
           <CarCard key={car._id} id={car._id} car={car}/>
         ))}
       </div>
