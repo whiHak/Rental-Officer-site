@@ -4,6 +4,7 @@ import { connectToDatabase } from "../database";
 import Car from "../database/models/car.model";
 import { UpdateCarparams } from "@/types";
 import { revalidatePath } from "next/cache";
+import Book from "../database/models/booking.model";
 
 export const createCar = async ({ car }: CreateCarParams) => {
   try {
@@ -52,9 +53,15 @@ export const updateCar = async ({ id, car }: UpdateCarparams) => {
 export const deleteCar = async (id: string) =>{
     try {
         await connectToDatabase();
+        // First delete all bookings associated with this car
+        await Book.deleteMany({ car: id });
+        // Then delete the car
         await Car.findByIdAndDelete(id);
+        // Revalidate the paths to update the UI
         revalidatePath("/");
+        revalidatePath("/my-cars");
     } catch (error) {
-        console.log(error);
+        console.error("Error deleting car and associated bookings:", error);
+        throw error;
     }
 }
