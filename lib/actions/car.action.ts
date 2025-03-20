@@ -1,7 +1,7 @@
 "use server"
 import { CreateCarParams } from "@/types";
 import { connectToDatabase } from "../database";
-import Car from "../database/models/car.model";
+import Car from "@/lib/database/models/car.model";
 import { UpdateCarparams } from "@/types";
 import { revalidatePath } from "next/cache";
 import Book from "../database/models/booking.model";
